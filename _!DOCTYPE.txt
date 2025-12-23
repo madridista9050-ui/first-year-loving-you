@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ذكرياتنا الجميلة ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff758c;
+            --secondary: #ff7eb3;
+            --soft-bg: #fdf2f4;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--soft-bg);
+            margin: 0;
+            overflow-x: hidden;
+            color: #4a4a4a;
+            /* مؤشر الفأرة على شكل قلب */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%23ff758c" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto;
+        }
+
+        /* شاشة الترحيب */
+        #welcome-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 9999; color: white; transition: 1s ease-in-out;
+        }
+
+        .start-btn {
+            padding: 15px 40px; font-size: 1.2rem; border: none; border-radius: 50px;
+            background: white; color: var(--primary); font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s;
+        }
+
+        /* الهيدر والعداد */
+        header {
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 60px 20px; text-align: center; color: white;
+            border-bottom-left-radius: 50% 20px; border-bottom-right-radius: 50% 20px;
+        }
+
+        .counter-grid {
+            display: flex; justify-content: center; gap: 15px; margin-top: 25px;
+            direction: ltr;
+        }
+
+        .counter-item {
+            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px);
+            padding: 15px; border-radius: 20px; min-width: 70px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .counter-item span { display: block; font-size: 1.8rem; font-weight: bold; }
+
+        /* الخط الزمني المستوحى من الصورة */
+        .timeline {
+            position: relative; max-width: 900px; margin: 50px auto; padding: 20px;
+        }
+
+        .timeline::after {
+            content: ''; position: absolute; width: 4px; background: var(--primary);
+            top: 0; bottom: 0; left: 50%; margin-left: -2px;
+        }
+
+        .milestone {
+            position: relative; width: 50%; padding: 20px 40px; box-sizing: border-box;
+            opacity: 0; transform: translateY(30px); transition: 1s;
+        }
+
+        .milestone.visible { opacity: 1; transform: translateY(0); }
+
+        /* القلوب التي تربط الذكريات */
+        .milestone::after {
+            content: '❤️'; position: absolute; width: 30px; height: 30px;
+            right: -15px; top: 25px; background: white; border: 2px solid var(--primary);
+            border-radius: 50%; z-index: 1; display: flex; align-items: center; justify-content: center;
+        }
+
+        .left { left: 0; text-align: left; }
+        .right { left: 50%; text-align: right; }
+        .right::after { left: -15px; }
+
+        .card {
+            background: white; padding: 20px; border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        /* المفاجأة التفاعلية: تأثير الضباب */
+        .card img {
+            width: 100%; border-radius: 15px; margin-bottom: 10px;
+            filter: blur(15px); transition: 1s ease; cursor: pointer;
+        }
+
+        .card img:hover {
+            filter: blur(0);
+            transform: scale(1.03);
+        }
+
+        /* القلوب والورود المتساقطة */
+        .falling {
+            position: fixed; top: -50px; z-index: -1; pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* زر الموسيقى */
+        #music-control {
+            position: fixed; bottom: 20px; left: 20px; z-index: 1000;
+            background: white; width: 55px; height: 55px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer; font-size: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .timeline::after { left: 31px; }
+            .milestone { width: 100%; padding-left: 70px; text-align: right !important; }
+            .milestone::after { left: 16px; }
+            .right { left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="welcome-screen">
+    <h1 style="margin-bottom: 20px;">جاهزة لرؤية عالمنا؟ ❤️</h1>
+    <button class="start-btn" onclick="initSite()">ابدئي الرحلة ✨</button>
+</div>
+
+<div id="music-control" onclick="toggleMusic()">🎵</div>
+<div style="display:none"><div id="player"></div></div>
+
+<header>
+    <h2>✨ علي المسكامى الستاد ✨</h2>
+    <div class="counter-grid">
+        <div class="counter-item"><span id="days">0</span>Days</div>
+        <div class="counter-item"><span id="hours">0</span>Hours</div>
+        <div class="counter-item"><span id="minutes">0</span>Mins</div>
+        <div class="counter-item"><span id="seconds">0</span>Secs</div>
+    </div>
+</header>
+
+<div class="timeline">
+    <div class="milestone right fade-in">
+        <div class="card">
+            <span style="color: #999;">24 ديسمبر 2024</span>
+            <h3>أول لقاء.. أول نبضة ✨</h3>
+            <img src="https://images.squarespace-cdn.com/content/v1/640f09761e08927f8a715568/1715694222049-H2V2T1J8YJ9F5O6T1N0N/image-asset.png" alt="ذكرى">
+            <p>المسي الصورة لتتضح الذكرى.. يا أحلى حاجة في عمري.</p>
+        </div>
+    </div>
+
+    <div class="milestone left fade-in">
+        <div class="card">
+            <span style="color: #999;">لحظة لا تُنسى</span>
+            <h3>جمالكِ الذي أسرني ❤️</h3>
+            <img src="https://images.squarespace-cdn.com/content/v1/640f09761e08927f8a715568/1715694222049-H2V2T1J8YJ9F5O6T1N0N/image-asset.png" alt="ذكرى">
+            <p>في كل يوم يمر، أكتشف فيكِ تفاصيل تزيدني حباً.</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+    // 1. العداد الزمني الدقيق منذ 24 ديسمبر 2024
+    const startDate = new Date("2024-12-24T00:00:00");
+    function updateCounter() {
+        const now = new Date();
+        const diff = now - startDate;
+        
+        document.getElementById("days").innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+        document.getElementById("hours").innerText = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        document.getElementById("minutes").innerText = Math.floor((diff / (1000 * 60)) % 60);
+        document.getElementById("seconds").innerText = Math.floor((diff / 1000) % 60);
+    }
+    setInterval(updateCounter, 1000);
+
+    // 2. نظام تساقط القلوب والورود
+    function createFalling() {
+        const items = ['❤️', '💖', '🌹', '🌸', '✨'];
+        const el = document.createElement('div');
+        el.className = 'falling';
+        el.innerHTML = items[Math.floor(Math.random() * items.length)];
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.fontSize = Math.random() * 20 + 15 + "px";
+        el.style.animationDuration = Math.random() * 3 + 4 + "s";
+        el.style.opacity = Math.random();
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 6000);
+    }
+    setInterval(createFalling, 300);
+
+    // 3. مشغل الموسيقى (عمرو دياب - يا أجمل عيون/يا أحلى حاجة في عمري)
+    let player;
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            height: '0', width: '0',
+            videoId: '2jGrV0aCDH0', 
+            events: { 'onStateChange': (e) => { if(e.data == YT.PlayerState.ENDED) player.playVideo(); } }
+        });
+    }
+
+    function initSite() {
+        document.getElementById('welcome-screen').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('welcome-screen').style.visibility = 'hidden';
+            if(player) player.playVideo();
+        }, 1000);
+    }
+
+    function toggleMusic() {
+        const state = player.getPlayerState();
+        if (state == 1) { 
+            player.pauseVideo(); 
+            document.getElementById('music-control').innerText = "🔇";
+        } else { 
+            player.playVideo(); 
+            document.getElementById('music-control').innerText = "🎵";
+        }
+    }
+
+    // تأثير الظهور عند التمرير
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.milestone').forEach(m => observer.observe(m));
+</script>
+
+</body>
+</html>
